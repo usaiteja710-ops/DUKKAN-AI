@@ -1,0 +1,17 @@
+/**
+ * BookWise Local - AI Assistant Configuration Constants
+ */
+export const ASSISTANT_CONFIG = {
+  MODEL: 'gemini-2.5-flash',
+  TEMPERATURE: 0.3,
+  MAX_OUTPUT_TOKENS: 1024,
+  MAX_TOOL_ITERATIONS: 5,
+  MAX_CHAT_HISTORY: 20,
+  MAX_USER_MESSAGE_LENGTH: 1000,
+  RATE_LIMIT_WINDOW_MS: 10 * 60 * 1000, // 10 minutes
+  RATE_LIMIT_MAX_MESSAGES: 20,
+  MAX_SLOTS_TO_SUGGEST: 5,
+  CALL_TIMEOUT_MS: 25000, // 25s timeout
+  EXPONENTIAL_BACKOFF_RETRIES: 2,
+};
+
