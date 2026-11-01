@@ -2,30 +2,40 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase.js';
 import { api } from '../lib/apiClient.js';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize session
+  // Load initial session
   useEffect(() => {
     let mounted = true;
 
     async function initAuth() {
-      // Check for mock session first (demo/test support)
+      // Check for local mock role first (Development / Demo mode)
       const mockRole = localStorage.getItem('bookwise_mock_role');
       if (mockRole) {
-        const mockUser = {
+        const storedProfileStr = localStorage.getItem('dukkan_profile_data');
+        const storedProfile = storedProfileStr ? JSON.parse(storedProfileStr) : null;
+
+        const defaultUser = {
           id: mockRole === 'shopkeeper' ? '22222222-2222-2222-2222-222222222201' : '22222222-2222-2222-2222-222222222202',
-          email: `${mockRole}@bookwise.local`,
+          email: `${mockRole}@dukkan.ai`,
           role: mockRole,
           full_name: mockRole === 'shopkeeper' ? 'Rajesh Sharma' : 'Priya Rao',
           phone: mockRole === 'shopkeeper' ? '+919876543210' : '+919876543211',
+          avatar_url: mockRole === 'shopkeeper'
+            ? 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80'
+            : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          email_notifications: true,
         };
-        setUser(mockUser);
-        setSession({ access_token: `mock-jwt-${mockUser.id}-${mockRole}` });
+
+        const activeUser = storedProfile?.id === defaultUser.id ? { ...defaultUser, ...storedProfile } : defaultUser;
+
+        setUser(activeUser);
+        setSession({ access_token: `mock-jwt-${activeUser.id}-${mockRole}` });
         setLoading(false);
         return;
       }
@@ -70,13 +80,16 @@ export function AuthProvider({ children }) {
     try {
       const profile = await api.get('/profile');
       setUser(profile);
+      localStorage.setItem('dukkan_profile_data', JSON.stringify(profile));
     } catch {
       // Fallback to user metadata
       setUser({
         id: authUser.id,
         email: authUser.email,
         role: authUser.user_metadata?.role || 'customer',
-        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0],
+        full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'User',
+        phone: authUser.user_metadata?.phone || '',
+        avatar_url: authUser.user_metadata?.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
       });
     }
   }
@@ -123,6 +136,7 @@ export function AuthProvider({ children }) {
   const signOut = async () => {
     localStorage.removeItem('bookwise_mock_role');
     localStorage.removeItem('bookwise_mock_jwt');
+    localStorage.removeItem('dukkan_profile_data');
     await supabase.auth.signOut().catch(() => null);
     setUser(null);
     setSession(null);
@@ -141,18 +155,33 @@ export function AuthProvider({ children }) {
 
     const mockUser = {
       id: userId,
-      email: `${role}@bookwise.local`,
+      email: `${role}@dukkan.ai`,
       role,
       full_name: role === 'shopkeeper' ? 'Rajesh Sharma' : 'Priya Rao',
       phone: role === 'shopkeeper' ? '+919876543210' : '+919876543211',
+      avatar_url: role === 'shopkeeper'
+        ? 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80'
+        : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      email_notifications: true,
     };
     setUser(mockUser);
+    localStorage.setItem('dukkan_profile_data', JSON.stringify(mockUser));
     setSession({ access_token: mockToken });
   };
 
   const updateProfile = async (profileData) => {
-    const updated = await api.patch('/profile', profileData);
-    setUser((prev) => ({ ...prev, ...updated }));
+    let updated;
+    try {
+      updated = await api.patch('/profile', profileData);
+    } catch (e) {
+      // In-memory update if network/api is offline
+      updated = { ...user, ...profileData };
+    }
+    setUser((prev) => {
+      const merged = { ...prev, ...updated };
+      localStorage.setItem('dukkan_profile_data', JSON.stringify(merged));
+      return merged;
+    });
     return updated;
   };
 
@@ -183,4 +212,3 @@ export function useAuth() {
   if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 }
-

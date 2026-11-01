@@ -25,7 +25,7 @@ import {
 
 export function MyBookings() {
   const toast = useToast();
-  const [tab, setTab] = useState('upcoming'); // 'upcoming' | 'past'
+  const [tab, setTab] = useState('upcoming');
 
   // Reschedule & Cancel modals state
   const [rescheduleTarget, setRescheduleTarget] = useState(null);
@@ -107,34 +107,40 @@ export function MyBookings() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Background ambient lighting */}
+      <div className="absolute top-10 right-1/4 w-96 h-96 bg-dukkan-azure/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
       <div>
+        <span className="text-xs font-bold uppercase tracking-widest text-dukkan-azure dark:text-dukkan-sky flex items-center gap-1.5 mb-1">
+          <Calendar className="w-3.5 h-3.5" /> Appointments Manager
+        </span>
         <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
           My Appointments
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1">
-          Review your scheduled visits, reschedule, or cancel prior to appointment start
+          Review your scheduled visits, reschedule, or cancel prior to appointment start time.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+      {/* Glass Tabs */}
+      <div className="flex items-center gap-2 p-1.5 rounded-2xl glass-card max-w-sm">
         <button
           onClick={() => setTab('upcoming')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex-1 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             tab === 'upcoming'
-              ? 'bg-brand-600 text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           Upcoming Bookings
         </button>
         <button
           onClick={() => setTab('past')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex-1 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
             tab === 'past'
-              ? 'bg-brand-600 text-white shadow-sm'
-              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           Past & Cancelled
@@ -144,7 +150,7 @@ export function MyBookings() {
       {/* Bookings List */}
       {isLoading ? (
         <div className="py-16 flex items-center justify-center">
-          <Spinner size="lg" className="text-brand-600" />
+          <Spinner size="lg" className="text-dukkan-azure" />
         </div>
       ) : bookings.length === 0 ? (
         <EmptyState
@@ -163,11 +169,11 @@ export function MyBookings() {
           {bookings.map((b) => (
             <div
               key={b.id}
-              className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+              className="glass-card p-5 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-dukkan-azure/40 transition-all duration-300"
             >
               <div className="space-y-2 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-400">
+                  <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-lg bg-dukkan-azure/10 text-dukkan-azure dark:text-dukkan-sky border border-dukkan-azure/20">
                     {b.reference_code}
                   </span>
                   <Badge variant={b.status}>{b.status}</Badge>
@@ -178,7 +184,7 @@ export function MyBookings() {
                 </h3>
 
                 <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-brand-500" />
+                  <Calendar className="w-3.5 h-3.5 text-dukkan-azure" />
                   <span>{formatLocalDateTime(b.start_time, b.shops?.timezone)}</span>
                   <span className="text-slate-400 font-normal">
                     ({b.services?.duration_minutes} mins)
@@ -186,21 +192,21 @@ export function MyBookings() {
                 </p>
 
                 <p className="text-xs text-slate-500 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                  <MapPin className="w-3.5 h-3.5 text-dukkan-azure" />
                   <span>
                     <strong>{b.shops?.name}</strong> • {b.shops?.city}
                   </span>
                 </p>
 
                 {b.notes && (
-                  <p className="text-xs text-slate-400 italic bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg max-w-lg">
+                  <p className="text-xs text-slate-500 italic bg-white/40 dark:bg-white/5 p-2 rounded-xl max-w-lg border border-white/20">
                     Notes: {b.notes}
                   </p>
                 )}
               </div>
 
               {/* Price & Actions */}
-              <div className="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end justify-between gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800">
+              <div className="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end justify-between gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-slate-200/50 dark:border-white/10">
                 <div className="text-right">
                   <span className="text-[11px] text-slate-400 block">Total Due</span>
                   <span className="text-base font-black text-slate-900 dark:text-white">
@@ -218,8 +224,9 @@ export function MyBookings() {
                           setRescheduleTarget(b);
                           setNewTimeInput('');
                         }}
+                        className="border-slate-300 dark:border-white/10"
                       >
-                        <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                        <RotateCcw className="w-3.5 h-3.5 mr-1 text-dukkan-azure" />
                         Reschedule
                       </Button>
                       <Button
@@ -258,13 +265,14 @@ export function MyBookings() {
       {/* Cancel Confirmation Modal */}
       <ConfirmDialog
         isOpen={!!cancelTarget}
-        onClose={() => setCancelTarget(null)}
-        onConfirm={handleCancelBooking}
-        isDestructive
-        isLoading={isCancelling}
-        title="Cancel Appointment"
-        message={`Are you sure you want to cancel your appointment (${cancelTarget?.reference_code}) at ${cancelTarget?.shops?.name}?`}
+        title="Cancel Appointment?"
+        message={`Are you sure you want to cancel your ${cancelTarget?.services?.name} appointment with ${cancelTarget?.shops?.name}? This action cannot be undone.`}
         confirmLabel="Yes, Cancel Booking"
+        cancelLabel="Keep Appointment"
+        variant="danger"
+        isLoading={isCancelling}
+        onConfirm={handleCancelBooking}
+        onCancel={() => setCancelTarget(null)}
       />
 
       {/* Reschedule Modal */}
@@ -272,38 +280,42 @@ export function MyBookings() {
         isOpen={!!rescheduleTarget}
         onClose={() => setRescheduleTarget(null)}
         title="Reschedule Appointment"
-        description={`Pick a new date and time for ${rescheduleTarget?.services?.name}`}
       >
         <form onSubmit={handleRescheduleSubmit} className="space-y-4">
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Choose a new date and time for <strong>{rescheduleTarget?.services?.name}</strong> at{' '}
+            <strong>{rescheduleTarget?.shops?.name}</strong>.
+          </p>
+
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              New Date & Time
+              New Appointment Date & Time
             </label>
             <input
               type="datetime-local"
               required
               value={newTimeInput}
               onChange={(e) => setNewTimeInput(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-dukkan-azure"
             />
           </div>
-
-          <p className="text-xs text-slate-500">
-            Rescheduling will atomically verify that the new slot is completely open before modifying your appointment.
-          </p>
 
           <div className="flex items-center justify-end gap-2 pt-2">
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => setRescheduleTarget(null)}
-              disabled={isRescheduling}
             >
-              Cancel
+              Back
             </Button>
-            <Button type="submit" size="sm" isLoading={isRescheduling} disabled={!newTimeInput}>
-              Save New Time
+            <Button
+              type="submit"
+              size="sm"
+              isLoading={isRescheduling}
+              className="bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white"
+            >
+              Confirm Reschedule
             </Button>
           </div>
         </form>
@@ -313,62 +325,63 @@ export function MyBookings() {
       <Modal
         isOpen={!!reviewTarget}
         onClose={() => setReviewTarget(null)}
-        title="Rate Your Experience"
-        description={`Share feedback for ${reviewTarget?.shops?.name}`}
+        title="Review Your Experience"
       >
         <form onSubmit={handleReviewSubmit} className="space-y-4">
+          <p className="text-xs text-slate-500 leading-relaxed">
+            How was your service at <strong>{reviewTarget?.shops?.name}</strong>? Your feedback helps the local community discover top businesses.
+          </p>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
               Rating
             </label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   type="button"
                   onClick={() => setReviewRating(star)}
-                  className="p-1 focus:outline-none"
+                  className="p-1 text-slate-300 hover:text-amber-400 focus:outline-none"
                 >
                   <Star
-                    className={`w-7 h-7 transition-colors ${
-                      reviewRating >= star
-                        ? 'text-amber-400 fill-amber-400'
-                        : 'text-slate-300 dark:text-slate-600'
+                    className={`w-6 h-6 ${
+                      star <= reviewRating ? 'text-amber-400 fill-amber-400' : 'text-slate-300'
                     }`}
                   />
                 </button>
               ))}
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-2">
-                {reviewRating} of 5 Stars
-              </span>
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Your Review & Comments
+              Comments (Optional)
             </label>
             <textarea
               rows={3}
               value={reviewComment}
               onChange={(e) => setReviewComment(e.target.value)}
-              placeholder="How was the service and punctuality?"
-              maxLength={1000}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              placeholder="Share details about staff punctuality, cleanliness, quality..."
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-dukkan-azure"
             />
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-2">
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => setReviewTarget(null)}
-              disabled={isReviewing}
             >
               Cancel
             </Button>
-            <Button type="submit" size="sm" isLoading={isReviewing}>
+            <Button
+              type="submit"
+              size="sm"
+              isLoading={isReviewing}
+              className="bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white"
+            >
               Submit Review
             </Button>
           </div>
@@ -377,4 +390,3 @@ export function MyBookings() {
     </div>
   );
 }
-

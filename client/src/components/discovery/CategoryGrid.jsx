@@ -39,38 +39,35 @@ export function CategoryGrid({ categories = [], selectedSlug = null, onSelectCat
 
         const Content = (
           <div
-            className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all duration-200 text-center cursor-pointer group ${
+            className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all duration-300 text-center cursor-pointer group ${
               isSelected
-                ? 'bg-brand-50 dark:bg-brand-950/80 border-brand-500 text-brand-700 dark:text-brand-300 shadow-md ring-2 ring-brand-500/20'
-                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-md'
+                ? 'bg-gradient-to-tr from-dukkan-navy to-dukkan-azure text-white shadow-glass-glow border border-dukkan-azure'
+                : 'glass-card text-slate-700 dark:text-slate-200 hover:border-dukkan-azure/40 hover:shadow-glass-hover'
             }`}
           >
             <div
-              className={`w-11 h-11 rounded-xl flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110 ${
+              className={`w-12 h-12 rounded-xl flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110 ${
                 isSelected
-                  ? 'bg-brand-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-brand-50 dark:group-hover:bg-brand-950 group-hover:text-brand-600'
+                  ? 'bg-white/20 text-white'
+                  : 'bg-white/60 dark:bg-dukkan-midnight/80 text-dukkan-azure dark:text-dukkan-sky group-hover:bg-dukkan-azure/10'
               }`}
             >
               <IconComponent className="w-5 h-5" />
             </div>
-            <span className="text-xs font-semibold leading-tight line-clamp-1">{cat.name}</span>
+            <span className="text-xs font-bold leading-tight line-clamp-1">{cat.name}</span>
           </div>
         );
 
-        if (onSelectCategory) {
-          return (
-            <button
-              key={cat.id || cat.slug}
-              type="button"
-              onClick={() => onSelectCategory(cat.slug)}
-            >
-              {Content}
-            </button>
-          );
-        }
-
-        return (
+        return onSelectCategory ? (
+          <button
+            key={cat.id || cat.slug}
+            type="button"
+            onClick={() => onSelectCategory(cat.slug)}
+            className="text-left w-full focus:outline-none"
+          >
+            {Content}
+          </button>
+        ) : (
           <Link key={cat.id || cat.slug} to={`/shops?category=${cat.slug}`}>
             {Content}
           </Link>
@@ -79,4 +76,3 @@ export function CategoryGrid({ categories = [], selectedSlug = null, onSelectCat
     </div>
   );
 }
-

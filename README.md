@@ -176,3 +176,4 @@ npm run test --workspace=client
 | **15** | UI is responsive (360px to 1440px), accessible, with loading, empty, and error states | Tailwind responsive classes, ARIA attributes, `client/src/components/ui/` | ✅ Verified |
 | **16** | Backend tests and frontend smoke tests pass; zero linting errors | `server/tests/`, `client/src/test/` | ✅ 18/18 Tests Passing |
 | **17** | README documents setup, env vars, migrations, seeding, tests, and deployment | `README.md` | ✅ Complete |
+

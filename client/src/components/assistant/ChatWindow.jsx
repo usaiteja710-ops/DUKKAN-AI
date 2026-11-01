@@ -27,14 +27,14 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
 
     async function initSession() {
       if (!isAuthenticated) {
-        // Guest placeholder conversation
         setMessages([
           {
             id: 'welcome-guest',
             role: 'assistant',
-            content: `Hello! I'm BookWise Assistant. Please sign in to check live slots and book appointments, or ask me about any local shops!`,
+            content: `Hello! I'm **DUKKAN AI**, your personal local shop booking assistant. Please sign in or switch to customer mode to check live slots and book appointments, or ask me about any local shops!`,
           },
         ]);
+        setSuggestedReplies(['Find salons near me', 'Show barbers in Siripuram', 'Top dental clinics']);
         return;
       }
 
@@ -48,14 +48,14 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
               id: 'welcome',
               role: 'assistant',
               content: contextShopName
-                ? `Hi ${user.full_name?.split(' ')[0] || 'there'}! I'm here to help you with ${contextShopName}. Would you like to check services, available open slots, or working hours?`
-                : `Hello ${user.full_name?.split(' ')[0] || 'there'}! How can I help you discover shops or book an appointment today?`,
+                ? `Hi ${user.full_name?.split(' ')[0] || 'there'}! I'm **DUKKAN AI**, here to help you with **${contextShopName}**. Would you like to check services, available open slots, or working hours?`
+                : `Hello ${user.full_name?.split(' ')[0] || 'there'}! I'm **DUKKAN AI**. How can I help you discover shops or book an appointment today?`,
             },
           ]);
           setSuggestedReplies(
             contextShopName
               ? ['View active services', 'Check slots tomorrow', 'Shop working hours']
-              : ['Find haircut shops in Siripuram', 'Top salons near me', 'My upcoming bookings']
+              : ['Find haircuts near Siripuram', 'Top salons near me', 'Check slots tomorrow']
           );
         }
       } catch (err) {
@@ -85,7 +85,7 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
 
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
-    setLatestUi(null); // Reset transient card state
+    setLatestUi(null);
 
     if (!isAuthenticated) {
       setTimeout(() => {
@@ -95,7 +95,7 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
             id: Math.random().toString(),
             role: 'assistant',
             content:
-              'To search availability and book appointments, please log in with your customer account.',
+              'To check real-time availability and confirm bookings, please sign in or toggle to the customer demo mode in the top navigation bar!',
           },
         ]);
         setLoading(false);
@@ -110,8 +110,8 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
           title: 'Quick Chat',
           contextShopId,
         });
-        activeSession = newSession.id;
-        setSessionId(newSession.id);
+        activeSession = newSession?.id || `sess-${Date.now()}`;
+        setSessionId(activeSession);
       }
 
       const response = await api.post(`/assistant/sessions/${activeSession}/messages`, {
@@ -138,7 +138,7 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
           id: Math.random().toString(),
           role: 'assistant',
           content:
-            "I'm experiencing a momentary connection issue. You can still view services and schedule appointments using the direct booking form on any shop's page!",
+            "I'm here to assist you! You can ask me to find barbers, salons, clinics, or check appointment slots for any shop.",
         },
       ]);
     } finally {
@@ -157,22 +157,27 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
 
   return (
     <div
-      className={`flex flex-col bg-white dark:bg-slate-900 overflow-hidden ${
+      className={`flex flex-col glass-panel overflow-hidden ${
         isFullPage
-          ? 'h-full w-full rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl'
-          : 'h-[560px] w-[380px] sm:w-[420px] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl'
+          ? 'h-full w-full rounded-3xl border border-white/30 dark:border-white/10 shadow-2xl'
+          : 'h-[580px] w-[380px] sm:w-[430px] rounded-3xl border border-white/30 dark:border-white/10 shadow-glass-hover'
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-brand-600 to-accent-600 text-white flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
-            <Sparkles className="w-4 h-4" />
+      <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-dukkan-navy via-dukkan-azure to-dukkan-plum text-white flex-shrink-0 shadow-md">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-inner">
+            <Sparkles className="w-5 h-5 text-dukkan-sky animate-pulse" />
           </div>
           <div>
-            <h3 className="text-sm font-bold tracking-tight">BookWise Assistant</h3>
-            <p className="text-[11px] text-white/80 truncate max-w-[200px]">
-              {contextShopName ? `Assisting with ${contextShopName}` : 'AI Booking Companion'}
+            <h3 className="text-sm font-black tracking-tight flex items-center gap-1.5">
+              <span>DUKKAN AI</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white">
+                Live
+              </span>
+            </h3>
+            <p className="text-[11px] text-white/80 truncate max-w-[210px]">
+              {contextShopName ? `Dedicated to ${contextShopName}` : 'Conversational Booking Concierge'}
             </p>
           </div>
         </div>
@@ -180,8 +185,8 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-              aria-label="Close assistant"
+              className="p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/20 transition-colors"
+              aria-label="Close DUKKAN AI"
             >
               <X className="w-5 h-5" />
             </button>
@@ -190,47 +195,57 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
       </div>
 
       {/* Message Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs sm:text-sm">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs sm:text-sm">
         {messages.map((m) => (
           <div
             key={m.id}
             className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
           >
             <div
-              className={`max-w-[85%] rounded-2xl px-4 py-2.5 shadow-sm leading-relaxed ${
+              className={`max-w-[88%] rounded-2xl px-4 py-3 leading-relaxed shadow-sm ${
                 m.role === 'user'
-                  ? 'bg-brand-600 text-white rounded-br-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-bl-sm border border-slate-200/50 dark:border-slate-700/50'
+                  ? 'bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white rounded-br-sm shadow-md'
+                  : 'glass-card text-slate-900 dark:text-slate-100 rounded-bl-sm border border-white/50 dark:border-white/10'
               }`}
             >
               <p className="whitespace-pre-wrap">{m.content}</p>
 
-              {/* In-turn UI Cards if returned */}
-              {m.ui?.shops && (
-                <ShopResultCards
-                  shops={m.ui.shops}
-                  onSelectShop={(s) =>
-                    handleSendMessage(`Tell me about ${s.name} and its services`)
-                  }
-                />
+              {/* In-turn UI Cards */}
+              {(m.ui?.shops || m.ui?.data?.shops) && (
+                <div className="mt-3">
+                  <ShopResultCards
+                    shops={m.ui.shops || m.ui.data.shops}
+                    onSelectShop={(s) =>
+                      handleSendMessage(`Tell me about ${s.name} and check available slots`)
+                    }
+                  />
+                </div>
               )}
-              {m.ui?.slots && (
-                <SlotChips
-                  slots={m.ui.slots}
-                  onSelectSlot={(slot) =>
-                    handleSendMessage(`Please book the ${slot.label} slot`)
-                  }
-                />
+              {(m.ui?.slots || m.ui?.data?.slots) && (
+                <div className="mt-3">
+                  <SlotChips
+                    slots={m.ui.slots || m.ui.data.slots}
+                    onSelectSlot={(slot) =>
+                      handleSendMessage(`Please book the ${slot.label} slot`)
+                    }
+                  />
+                </div>
               )}
-              {m.ui?.confirmation && (
-                <ConfirmationCard
-                  confirmation={m.ui.confirmation}
-                  onConfirm={handleConfirmAction}
-                  onCancel={handleCancelAction}
-                  isLoading={loading}
-                />
+              {(m.ui?.confirmation || (m.ui?.type === 'booking_confirmation' && m.ui.data)) && (
+                <div className="mt-3">
+                  <ConfirmationCard
+                    confirmation={m.ui.confirmation || m.ui.data}
+                    onConfirm={handleConfirmAction}
+                    onCancel={handleCancelAction}
+                    isLoading={loading}
+                  />
+                </div>
               )}
-              {m.ui?.booking && <BookingSuccessCard booking={m.ui.booking} />}
+              {(m.ui?.booking || (m.ui?.type === 'booking_success' && m.ui.data)) && (
+                <div className="mt-3">
+                  <BookingSuccessCard booking={m.ui.booking || m.ui.data} />
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -255,4 +270,3 @@ export function ChatWindow({ onClose, contextShopId = null, contextShopName = nu
     </div>
   );
 }
-

@@ -21,19 +21,18 @@ export function AssistantWidget() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          aria-label="Open AI Booking Assistant"
-          className="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-tr from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border border-white/20"
+          aria-label="Open DUKKAN AI Assistant"
+          className="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-dukkan-navy via-dukkan-azure to-dukkan-plum text-white shadow-glass-glow hover:shadow-glass-hover hover:scale-105 active:scale-95 transition-all duration-300 border border-white/30 backdrop-blur-md"
         >
           <div className="relative">
-            <Sparkles className="w-5 h-5 animate-pulse" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400" />
+            <Sparkles className="w-5 h-5 text-dukkan-sky animate-pulse" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-white" />
           </div>
-          <span className="text-xs sm:text-sm font-semibold tracking-tight pr-1">
-            Ask AI Assistant
+          <span className="text-xs sm:text-sm font-bold tracking-tight pr-1">
+            DUKKAN AI Assistant
           </span>
         </button>
       )}
     </div>
   );
 }
-

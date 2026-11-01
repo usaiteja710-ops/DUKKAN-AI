@@ -11,7 +11,6 @@ import {
   Moon,
   Menu,
   X,
-  Search,
   Compass,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -45,25 +44,30 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <header className="sticky top-0 z-40 bg-white/75 dark:bg-[#021024]/80 backdrop-blur-xl border-b border-white/20 dark:border-white/10 shadow-glass transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2.5 font-bold text-xl text-slate-900 dark:text-white group flex-shrink-0"
-            aria-label="BookWise Local Home"
+            className="flex items-center gap-2.5 font-black text-xl text-slate-900 dark:text-white group flex-shrink-0"
+            aria-label="DUKKAN AI Home"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
-              <Store className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-dukkan-navy via-dukkan-azure to-dukkan-plum flex items-center justify-center text-white shadow-glass-glow group-hover:scale-105 transition-transform">
+              <Store className="w-5 h-5 text-white" />
             </div>
-            <span className="tracking-tight">
-              BookWise <span className="text-brand-600 dark:text-brand-400 font-normal">Local</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="tracking-tight text-lg leading-tight flex items-center gap-1">
+                DUKKAN <span className="bg-gradient-to-r from-dukkan-azure to-dukkan-sky bg-clip-text text-transparent font-bold">AI</span>
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-dukkan-sky/70 tracking-wider font-semibold uppercase">
+                Smart Local Booking
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.href;
@@ -71,16 +75,16 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all ${
                     isActive
-                      ? 'bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 font-semibold'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                      ? 'bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white shadow-md'
+                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/10'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{link.label}</span>
                   {link.badge && (
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-accent-100 dark:bg-accent-950 text-accent-700 dark:text-accent-300">
+                    <span className="text-[10px] uppercase font-black tracking-wider px-1.5 py-0.5 rounded-full bg-dukkan-dustyRose dark:bg-dukkan-plum text-dukkan-currant dark:text-dukkan-dustyRose">
                       {link.badge}
                     </span>
                   )}
@@ -91,14 +95,14 @@ export function Navbar() {
 
           {/* Right Actions: Quick Role Switcher, Dark Mode, Profile */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Demo Role Switcher (Convenient one-click testing) */}
-            <div className="hidden lg:flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs">
+            {/* Demo Role Switcher */}
+            <div className="hidden lg:flex items-center gap-1 p-1 bg-white/50 dark:bg-dukkan-steel/70 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl text-xs">
               <button
                 type="button"
                 onClick={() => setMockRole('customer')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                   user?.role === 'customer'
-                    ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-sm'
+                    ? 'bg-white dark:bg-dukkan-midnight text-dukkan-azure dark:text-dukkan-sky shadow-sm'
                     : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
                 title="Switch to customer mode"
@@ -108,9 +112,9 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => setMockRole('shopkeeper')}
-                className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                   isShopkeeper
-                    ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-sm'
+                    ? 'bg-white dark:bg-dukkan-midnight text-dukkan-azure dark:text-dukkan-sky shadow-sm'
                     : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
                 title="Switch to shopkeeper mode"
@@ -123,7 +127,7 @@ export function Navbar() {
             <button
               onClick={toggleTheme}
               aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
-              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-white/50 dark:hover:bg-white/10 transition-colors backdrop-blur-sm"
             >
               {resolvedTheme === 'dark' ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
             </button>
@@ -133,14 +137,22 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/50 dark:hover:bg-white/10 transition-colors"
                   aria-expanded={userDropdownOpen}
                   aria-label="User menu"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm">
-                    {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
-                  </div>
-                  <span className="hidden xl:inline text-xs font-medium text-slate-700 dark:text-slate-300 max-w-[100px] truncate">
+                  {user.avatar_url ? (
+                    <img
+                      src={user.avatar_url}
+                      alt={user.full_name || 'Profile'}
+                      className="w-8 h-8 rounded-xl object-cover border border-white/40 dark:border-white/20 shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-dukkan-azure to-dukkan-plum text-white flex items-center justify-center font-bold text-xs uppercase shadow-sm">
+                      {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    </div>
+                  )}
+                  <span className="hidden xl:inline text-xs font-semibold text-slate-700 dark:text-slate-200 max-w-[110px] truncate">
                     {user.full_name || user.email}
                   </span>
                 </button>
@@ -148,46 +160,46 @@ export function Navbar() {
                 {/* Dropdown Menu */}
                 {userDropdownOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50 animate-slide-up"
+                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-white/90 dark:bg-dukkan-steel/95 backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-glass-hover py-2 z-50 animate-slide-up"
                     onClick={() => setUserDropdownOpen(false)}
                   >
-                    <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
-                      <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                    <div className="px-4 py-2 border-b border-slate-100 dark:border-white/10">
+                      <p className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
                         {user.full_name}
                       </p>
                       <p className="text-[11px] text-slate-400 truncate mt-0.5">{user.email}</p>
-                      <span className="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300">
+                      <span className="inline-block mt-1 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-dukkan-azure/10 text-dukkan-azure dark:text-dukkan-sky border border-dukkan-azure/20">
                         {user.role}
                       </span>
                     </div>
 
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-dukkan-azure/10"
                     >
-                      <User className="w-4 h-4 text-slate-400" />
+                      <User className="w-4 h-4 text-dukkan-azure" />
                       <span>Profile & Settings</span>
                     </Link>
 
                     {isShopkeeper ? (
                       <Link
                         to="/dashboard"
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-dukkan-azure/10"
                       >
-                        <LayoutDashboard className="w-4 h-4 text-slate-400" />
+                        <LayoutDashboard className="w-4 h-4 text-dukkan-azure" />
                         <span>Shopkeeper Dashboard</span>
                       </Link>
                     ) : (
                       <Link
                         to="/my-bookings"
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-dukkan-azure/10"
                       >
-                        <Calendar className="w-4 h-4 text-slate-400" />
+                        <Calendar className="w-4 h-4 text-dukkan-azure" />
                         <span>My Bookings</span>
                       </Link>
                     )}
 
-                    <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
+                    <div className="border-t border-slate-100 dark:border-white/10 my-1" />
 
                     <button
                       onClick={handleSignOut}
@@ -202,23 +214,23 @@ export function Navbar() {
             ) : (
               <div className="flex items-center gap-2">
                 <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    Log in
+                  <Button size="sm" variant="ghost" className="text-xs">
+                    Sign In
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button variant="primary" size="sm">
-                    Sign up
+                  <Button size="sm" variant="primary" className="text-xs bg-gradient-to-r from-dukkan-navy to-dukkan-azure text-white">
+                    Sign Up
                   </Button>
                 </Link>
               </div>
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="Toggle mobile navigation menu"
+              className="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/10"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -226,9 +238,9 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-3 pb-6 space-y-2 animate-slide-up">
+        <div className="md:hidden border-t border-white/20 dark:border-white/10 px-4 pt-3 pb-6 space-y-2 bg-white/95 dark:bg-dukkan-midnight/95 backdrop-blur-xl animate-fade-in">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = location.pathname === link.href;
@@ -237,55 +249,26 @@ export function Navbar() {
                 key={link.href}
                 to={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium ${
+                className={`flex items-center justify-between p-3 rounded-xl text-sm font-medium ${
                   isActive
-                    ? 'bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 font-semibold'
-                    : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-dukkan-azure/15 text-dukkan-azure dark:text-dukkan-sky font-semibold'
+                    : 'text-slate-700 dark:text-slate-200 hover:bg-white/50 dark:hover:bg-white/5'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-5 h-5 text-slate-400" />
+                  <Icon className="w-5 h-5" />
                   <span>{link.label}</span>
                 </div>
                 {link.badge && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent-100 dark:bg-accent-950 text-accent-700 dark:text-accent-300">
+                  <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-dukkan-plum text-white">
                     {link.badge}
                   </span>
                 )}
               </Link>
             );
           })}
-
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-              Quick Role Switch (Demo)
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant={user?.role === 'customer' ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  setMockRole('customer');
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Customer Mode
-              </Button>
-              <Button
-                variant={isShopkeeper ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  setMockRole('shopkeeper');
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Shopkeeper Mode
-              </Button>
-            </div>
-          </div>
         </div>
       )}
     </header>
   );
 }
-

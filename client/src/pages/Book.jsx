@@ -54,7 +54,7 @@ export function Book() {
   if (shopLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Spinner size="lg" className="text-brand-600" />
+        <Spinner size="lg" className="text-dukkan-azure" />
       </div>
     );
   }
@@ -127,7 +127,10 @@ export function Book() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      {/* Ambient background glow */}
+      <div className="absolute top-10 left-1/4 w-96 h-96 bg-dukkan-azure/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
       {/* Header & Back Button */}
       <div className="flex items-center justify-between">
         <button
@@ -135,14 +138,14 @@ export function Book() {
             if (currentStep > 1) setCurrentStep((prev) => prev - 1);
             else navigate(`/shops/${shop.id}`);
           }}
-          className="text-xs font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition-colors"
+          className="text-xs font-semibold text-slate-500 hover:text-dukkan-azure dark:hover:text-dukkan-sky flex items-center gap-1.5 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{currentStep > 1 ? 'Previous Step' : `Back to ${shop.name}`}</span>
         </button>
 
-        <span className="text-xs text-slate-400">
-          Booking with <strong>{shop.name}</strong> ({shop.city})
+        <span className="text-xs text-slate-500">
+          Booking with <strong className="text-slate-800 dark:text-slate-200">{shop.name}</strong> ({shop.city})
         </span>
       </div>
 
@@ -151,15 +154,15 @@ export function Book() {
 
       {/* Selected Choices Bar */}
       {(selectedService || selectedSlot) && (
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-brand-50/70 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl glass-card border border-dukkan-azure/20 text-xs">
           <div className="flex flex-wrap items-center gap-3">
             {selectedService && (
-              <span className="font-semibold text-brand-900 dark:text-brand-200">
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
                 Service: <strong>{selectedService.name}</strong> ({formatCurrency(selectedService.price)})
               </span>
             )}
             {selectedSlot && (
-              <span className="font-semibold text-brand-900 dark:text-brand-200">
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
                 Slot: <strong>{formatLocalDateTime(selectedSlot.start_time, shop.timezone)}</strong>
               </span>
             )}
@@ -167,7 +170,7 @@ export function Book() {
           {currentStep > 1 && (
             <button
               onClick={() => setCurrentStep(1)}
-              className="text-[11px] font-bold uppercase tracking-wider text-brand-600 hover:underline"
+              className="text-[11px] font-bold uppercase tracking-wider text-dukkan-azure dark:text-dukkan-sky hover:underline"
             >
               Change Service
             </button>
@@ -179,7 +182,7 @@ export function Book() {
       {currentStep === 1 && (
         <div className="space-y-6">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white">
               1. Choose a Service
             </h2>
             <p className="text-xs text-slate-500">
@@ -202,7 +205,7 @@ export function Book() {
       {currentStep === 2 && selectedService && (
         <div className="space-y-6">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white">
               2. Select Appointment Date & Time
             </h2>
             <p className="text-xs text-slate-500">
@@ -227,7 +230,7 @@ export function Book() {
       {currentStep === 3 && selectedService && selectedSlot && (
         <div className="space-y-6 max-w-2xl mx-auto">
           <div className="space-y-1 text-center">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white">
               3. Enter Customer Details
             </h2>
             <p className="text-xs text-slate-500">
@@ -235,7 +238,7 @@ export function Book() {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 shadow-glass-hover">
             <BookingForm
               onSubmit={handleBookingSubmit}
               isLoading={submitting}
@@ -247,4 +250,3 @@ export function Book() {
     </div>
   );
 }
-

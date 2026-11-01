@@ -7,7 +7,7 @@ import { ShopCardSkeleton } from '../components/ui/Skeleton.jsx';
 import { SearchBar } from '../components/discovery/SearchBar.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
 import { Button } from '../components/ui/Button.jsx';
-import { Filter, Star, Compass, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, Star, Compass, ArrowUpDown, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 export function Shops() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,7 +51,7 @@ export function Shops() {
     } else {
       nextParams.delete(key);
     }
-    nextParams.set('page', '1'); // Reset to page 1 on filter change
+    nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
 
@@ -68,15 +68,21 @@ export function Shops() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Background ambient lighting */}
+      <div className="absolute top-10 left-1/3 w-96 h-96 bg-dukkan-azure/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
       {/* Top Banner & Search */}
       <div className="space-y-4">
         <div>
+          <span className="text-xs font-bold uppercase tracking-widest text-dukkan-azure dark:text-dukkan-sky flex items-center gap-1.5 mb-1">
+            <Sparkles className="w-3.5 h-3.5" /> DUKKAN AI Discovery Engine
+          </span>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            Discover Local Businesses
+            Discover Verified Local Businesses
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Explore verified salons, barbers, clinics, spas, and repair shops with real-time open slots
+            Explore authentic neighborhood salons, barbers, clinics, spas, and repair shops with real-time open slots.
           </p>
         </div>
 
@@ -88,18 +94,18 @@ export function Shops() {
         />
       </div>
 
-      {/* Filter Chips Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+      {/* Glass Filter Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 glass-card border border-white/40 dark:border-white/10 shadow-glass">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-1">
-            <Filter className="w-3.5 h-3.5" /> Filter:
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mr-1">
+            <Filter className="w-3.5 h-3.5 text-dukkan-azure" /> Filter:
           </span>
 
           {/* Category Dropdown */}
           <select
             value={category}
             onChange={(e) => updateParam('category', e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none"
+            className="px-3 py-1.5 rounded-xl border border-slate-200/60 dark:border-white/10 text-xs bg-white/70 dark:bg-dukkan-midnight/80 text-slate-800 dark:text-slate-200 outline-none backdrop-blur-md"
           >
             <option value="">All Categories</option>
             {categories.map((c) => (
@@ -113,19 +119,19 @@ export function Shops() {
           <select
             value={minRating}
             onChange={(e) => updateParam('minRating', e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none"
+            className="px-3 py-1.5 rounded-xl border border-slate-200/60 dark:border-white/10 text-xs bg-white/70 dark:bg-dukkan-midnight/80 text-slate-800 dark:text-slate-200 outline-none backdrop-blur-md"
           >
             <option value="0">Any Rating</option>
+            <option value="4.8">★ 4.8 & up</option>
             <option value="4.5">★ 4.5 & up</option>
             <option value="4.0">★ 4.0 & up</option>
-            <option value="3.5">★ 3.5 & up</option>
           </select>
 
           {/* Reset Filters */}
           {(query || category || city || minRating > 0) && (
             <button
               onClick={() => setSearchParams({})}
-              className="text-xs text-rose-500 hover:text-rose-600 font-medium px-2 py-1"
+              className="text-xs text-rose-500 hover:text-rose-600 font-semibold px-2 py-1"
             >
               Clear filters
             </button>
@@ -134,12 +140,12 @@ export function Shops() {
 
         {/* Sort Dropdown */}
         <div className="flex items-center gap-2 text-xs">
-          <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-slate-400">Sort by:</span>
+          <ArrowUpDown className="w-3.5 h-3.5 text-dukkan-azure" />
+          <span className="text-slate-500 dark:text-slate-400">Sort by:</span>
           <select
             value={sort}
             onChange={(e) => updateParam('sort', e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none font-semibold"
+            className="px-3 py-1.5 rounded-xl border border-slate-200/60 dark:border-white/10 text-xs bg-white/70 dark:bg-dukkan-midnight/80 text-slate-800 dark:text-slate-200 outline-none font-semibold backdrop-blur-md"
           >
             <option value="rating">Highest Rated</option>
             <option value="name">Alphabetical (A-Z)</option>
@@ -180,12 +186,13 @@ export function Shops() {
 
           {/* Pagination Controls */}
           {pagination.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3 pt-6 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-center gap-3 pt-6 border-t border-slate-200/60 dark:border-white/10">
               <Button
                 variant="outline"
                 size="sm"
                 disabled={page <= 1}
                 onClick={() => updateParam('page', page - 1)}
+                className="border-slate-200 dark:border-white/10"
               >
                 <ChevronLeft className="w-4 h-4 mr-1" /> Previous
               </Button>
@@ -197,6 +204,7 @@ export function Shops() {
                 size="sm"
                 disabled={page >= pagination.totalPages}
                 onClick={() => updateParam('page', page + 1)}
+                className="border-slate-200 dark:border-white/10"
               >
                 Next <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -207,4 +215,3 @@ export function Shops() {
     </div>
   );
 }
-

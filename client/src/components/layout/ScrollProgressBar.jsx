@@ -20,7 +20,7 @@ export function ScrollProgressBar() {
   return (
     <div className="fixed top-0 left-0 w-full h-1 z-50 pointer-events-none bg-transparent">
       <div
-        className="h-full bg-gradient-to-r from-brand-500 to-accent-500 transition-all duration-150 ease-out"
+        className="h-full bg-gradient-to-r from-dukkan-navy via-dukkan-azure to-dukkan-plum transition-all duration-150 ease-out"
         style={{ width: `${scrollProgress}%` }}
         role="progressbar"
         aria-valuenow={Math.round(scrollProgress)}
@@ -30,4 +30,3 @@ export function ScrollProgressBar() {
     </div>
   );
 }
-

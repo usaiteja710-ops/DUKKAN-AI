@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import App from '../App.jsx';
 
-describe('BookWise Client Smoke Tests', () => {
+describe('DUKKAN AI Client Smoke Tests', () => {
   it('renders application with brand name and hero heading', () => {
     render(<App />);
-    const brandElements = screen.getAllByText(/BookWise/i);
+    const brandElements = screen.getAllByText(/DUKKAN/i);
     expect(brandElements.length).toBeGreaterThan(0);
     expect(screen.getByText(/Book Top Local Shops/i)).toBeInTheDocument();
   });
