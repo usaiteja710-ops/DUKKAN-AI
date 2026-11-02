@@ -17,6 +17,15 @@ const server = app.listen(env.PORT, () => {
   startReminderJob();
 });
 
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`Port ${env.PORT} is already in use by another process. Stop the running process or choose a different PORT.`);
+  } else {
+    logger.error({ err: err.message }, 'Server failed to start');
+  }
+  process.exit(1);
+});
+
 // Graceful shutdown handling
 function handleShutdown(signal) {
   logger.info({ signal }, 'Shutting down gracefully...');
