@@ -14,30 +14,40 @@
 
   /* Accessible focus styling */
   *:focus-visible {
-    @apply outline-none ring-2 ring-dukkan-azure ring-offset-2 ring-offset-white dark:ring-offset-dukkan-midnight;
+    outline: 2px solid #5483B3;
+    outline-offset: 2px;
   }
 }
 
 @layer components {
   /* Glassmorphism Classes with Elegant Translucency */
   .glass-card {
-    @apply bg-white/70 dark:bg-dukkan-steel/70 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-glass rounded-2xl;
+    @apply bg-white/70 dark:bg-[#11212D]/70 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl;
+    box-shadow: 0 8px 32px 0 rgba(2, 16, 36, 0.12);
   }
 
   .glass-card-hover {
-    @apply glass-card hover:bg-white/85 dark:hover:bg-dukkan-steel/85 hover:shadow-glass-hover hover:border-white/60 dark:hover:border-dukkan-azure/30 transition-all duration-300;
+    @apply glass-card transition-all duration-300;
+  }
+  .glass-card-hover:hover {
+    @apply bg-white/85 dark:bg-[#11212D]/85 border-white/60 dark:border-[#5483B3]/30;
+    box-shadow: 0 14px 40px -5px rgba(2, 16, 36, 0.2);
   }
 
   .glass-panel {
-    @apply bg-white/80 dark:bg-dukkan-midnight/80 backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-2xl;
+    @apply bg-white/80 dark:bg-[#021024]/80 backdrop-blur-2xl border border-white/30 dark:border-white/10 shadow-2xl;
   }
 
   .glass-input {
-    @apply bg-white/60 dark:bg-dukkan-midnight/60 backdrop-blur-md border border-slate-200/80 dark:border-dukkan-slate/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white dark:focus:bg-dukkan-midnight/90 focus:border-dukkan-azure focus:ring-2 focus:ring-dukkan-azure/20 transition-all;
+    @apply bg-white/60 dark:bg-[#021024]/60 backdrop-blur-md border border-slate-200/80 dark:border-white/10 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 transition-all;
+  }
+  .glass-input:focus {
+    @apply bg-white dark:bg-[#021024];
+    border-color: #5483B3;
   }
 
   .glass-pill {
-    @apply bg-white/80 dark:bg-dukkan-slate/80 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-sm;
+    @apply bg-white/80 dark:bg-[#253745]/80 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-sm;
   }
 }
 
@@ -50,7 +60,7 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-dukkan-sky/40 dark:bg-dukkan-harbor/60 rounded-full hover:bg-dukkan-azure dark:hover:bg-dukkan-sky/70;
+  @apply bg-[#7DA0CA]/40 dark:bg-[#4A5C6A]/60 rounded-full hover:bg-[#5483B3] dark:hover:bg-[#7DA0CA]/70;
 }
 
 /* Print Stylesheet */
