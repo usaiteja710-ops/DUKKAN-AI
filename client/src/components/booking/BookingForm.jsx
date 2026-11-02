@@ -26,6 +26,7 @@ export function BookingForm({ onSubmit, isLoading = false, cancellationWindowHou
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -37,6 +38,18 @@ export function BookingForm({ onSubmit, isLoading = false, cancellationWindowHou
       agree_terms: true,
     },
   });
+
+  React.useEffect(() => {
+    if (user) {
+      reset({
+        customer_name: user.full_name || '',
+        customer_email: user.email || '',
+        customer_phone: user.phone || '',
+        notes: '',
+        agree_terms: true,
+      });
+    }
+  }, [user, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

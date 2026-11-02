@@ -169,6 +169,26 @@ export function AuthProvider({ children }) {
     setSession({ access_token: mockToken });
   };
 
+  const loginAsGuest = (guestData = {}) => {
+    const guestId = guestData.id || `guest-${Date.now()}`;
+    const guestToken = `mock-jwt-${guestId}-customer`;
+    const guestUser = {
+      id: guestId,
+      email: guestData.email || 'customer@dukkan.ai',
+      role: 'customer',
+      full_name: guestData.name || 'Valued Customer',
+      phone: guestData.phone || '',
+      avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      email_notifications: true,
+    };
+    localStorage.setItem('bookwise_mock_role', 'customer');
+    localStorage.setItem('bookwise_mock_jwt', guestToken);
+    localStorage.setItem('dukkan_profile_data', JSON.stringify(guestUser));
+    setUser(guestUser);
+    setSession({ access_token: guestToken });
+    return guestUser;
+  };
+
   const updateProfile = async (profileData) => {
     let updated;
     try {
@@ -199,6 +219,7 @@ export function AuthProvider({ children }) {
         signIn,
         signOut,
         setMockRole,
+        loginAsGuest,
         updateProfile,
       }}
     >

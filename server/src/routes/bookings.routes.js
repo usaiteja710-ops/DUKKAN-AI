@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/requireAuth.js';
+import { requireAuth, optionalAuth } from '../middleware/requireAuth.js';
 import { validate } from '../middleware/validate.js';
 import { bookingLimiter } from '../middleware/rateLimiters.js';
 import { createBooking, rescheduleBooking, cancelBooking } from '../services/booking.service.js';
 import { createBookingSchema, rescheduleSchema, cancelSchema } from '../validators/booking.schema.js';
 import { reviewSchema } from '../validators/review.schema.js';
-import { supabaseAdmin } from '../lib/supabase.js';
+import { supabaseAdmin, isSupabaseConfigured } from '../lib/supabase.js';
 import { AppError } from '../utils/errors.js';
 import { inMemoryBookings, reviewsData } from '../lib/dbStore.js';
 
 const router = Router();
 
-// Create booking (Authenticated or Guest with auto profile association)
+// Create booking (Authenticated or auto-authenticated guest)
 router.post(
   '/',
   requireAuth,
@@ -25,7 +25,7 @@ router.post(
         shopId: shop_id,
         serviceId: service_id,
         staffId: staff_id,
-        customerId: req.user.id,
+        customerId: req.user?.id || null,
         name: customer_name,
         phone: customer_phone,
         email: customer_email,
@@ -49,31 +49,33 @@ router.get('/mine', requireAuth, async (req, res, next) => {
   try {
     const { when = 'upcoming', status } = req.query;
 
-    try {
-      let query = supabaseAdmin
-        .from('bookings')
-        .select('*, shops(name, city, address_line, phone, timezone, cancellation_window_hours), services(name, duration_minutes, price), staff_members(name)')
-        .eq('customer_id', req.user.id);
+    if (isSupabaseConfigured) {
+      try {
+        let query = supabaseAdmin
+          .from('bookings')
+          .select('*, shops(name, city, address_line, phone, timezone, cancellation_window_hours), services(name, duration_minutes, price), staff_members(name)')
+          .eq('customer_id', req.user.id);
 
-      if (status) {
-        query = query.eq('status', status);
-      }
+        if (status) {
+          query = query.eq('status', status);
+        }
 
-      const nowIso = new Date().toISOString();
-      if (when === 'upcoming') {
-        query = query.gte('start_time', nowIso).in('status', ['pending', 'confirmed']).order('start_time', { ascending: true });
-      } else if (when === 'past') {
-        query = query.or(`start_time.lt.${nowIso},status.in.(completed,cancelled,no_show)`).order('start_time', { ascending: false });
-      } else {
-        query = query.order('start_time', { ascending: false });
-      }
+        const nowIso = new Date().toISOString();
+        if (when === 'upcoming') {
+          query = query.gte('start_time', nowIso).in('status', ['pending', 'confirmed']).order('start_time', { ascending: true });
+        } else if (when === 'past') {
+          query = query.or(`start_time.lt.${nowIso},status.in.(completed,cancelled,no_show)`).order('start_time', { ascending: false });
+        } else {
+          query = query.order('start_time', { ascending: false });
+        }
 
-      const { data: bookings, error } = await query;
-      if (!error && bookings) {
-        return res.json({ success: true, data: bookings });
+        const { data: bookings, error } = await query;
+        if (!error && bookings) {
+          return res.json({ success: true, data: bookings });
+        }
+      } catch (e) {
+        // In-memory fallback
       }
-    } catch (e) {
-      // In-memory fallback
     }
 
     const nowIso = new Date().toISOString();
@@ -92,21 +94,23 @@ router.get('/mine', requireAuth, async (req, res, next) => {
   }
 });
 
-// Get booking details (accessible only to booking customer or shop owner)
-router.get('/:id', requireAuth, async (req, res, next) => {
+// Get booking details (accessible to booking customer, shop owner, or direct confirmation link)
+router.get('/:id', optionalAuth, async (req, res, next) => {
   try {
-    try {
-      const { data: booking, error } = await supabaseAdmin
-        .from('bookings')
-        .select('*, shops(id, name, owner_id, city, address_line, phone, timezone, cancellation_window_hours), services(name, duration_minutes, price), staff_members(name)')
-        .eq('id', req.params.id)
-        .single();
+    if (isSupabaseConfigured) {
+      try {
+        const { data: booking, error } = await supabaseAdmin
+          .from('bookings')
+          .select('*, shops(id, name, owner_id, city, address_line, phone, timezone, cancellation_window_hours), services(name, duration_minutes, price), staff_members(name)')
+          .eq('id', req.params.id)
+          .single();
 
-      if (!error && booking) {
-        return res.json({ success: true, data: booking });
+        if (!error && booking) {
+          return res.json({ success: true, data: booking });
+        }
+      } catch (e) {
+        // Fallback
       }
-    } catch (e) {
-      // Fallback
     }
 
     const booking = inMemoryBookings.find((b) => b.id === req.params.id);

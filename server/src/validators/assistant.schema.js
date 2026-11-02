@@ -16,19 +16,19 @@ export const searchShopsToolSchema = z.object({
 });
 
 export const getShopInfoToolSchema = z.object({
-  shop_id: z.string().uuid(),
+  shop_id: z.string().min(1),
 });
 
 export const checkAvailabilityToolSchema = z.object({
-  shop_id: z.string().uuid(),
-  service_id: z.string().uuid(),
+  shop_id: z.string().min(1),
+  service_id: z.string().min(1),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   time_window: z.enum(['any', 'morning', 'afternoon', 'evening']).optional().default('any'),
 });
 
 export const prepareBookingToolSchema = z.object({
-  shop_id: z.string().uuid(),
-  service_id: z.string().uuid(),
+  shop_id: z.string().min(1),
+  service_id: z.string().min(1),
   start_time: z.string().datetime(),
   notes: z.string().trim().max(500).optional(),
 });
@@ -42,7 +42,7 @@ export const listMyBookingsToolSchema = z.object({
 });
 
 export const prepareRescheduleToolSchema = z.object({
-  booking_id: z.string().uuid(),
+  booking_id: z.string().min(1),
   new_start_time: z.string().datetime(),
 });
 
@@ -51,7 +51,7 @@ export const rescheduleBookingToolSchema = z.object({
 });
 
 export const prepareCancelToolSchema = z.object({
-  booking_id: z.string().uuid(),
+  booking_id: z.string().min(1),
   reason: z.string().trim().max(500).optional(),
 });
 

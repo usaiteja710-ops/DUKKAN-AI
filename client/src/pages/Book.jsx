@@ -19,7 +19,7 @@ export function Book() {
   const { shopId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loginAsGuest } = useAuth();
   const toast = useToast();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -79,14 +79,18 @@ export function Book() {
       return;
     }
 
-    if (!isAuthenticated) {
-      toast.info('Please sign in or create an account to secure your booking');
-      navigate('/login', { state: { from: `/book/${shop.id}?serviceId=${selectedService.id}` } });
-      return;
-    }
-
     try {
       setSubmitting(true);
+
+      // Auto-establish customer session for guest if not logged in
+      if (!isAuthenticated && loginAsGuest) {
+        loginAsGuest({
+          name: formData.customer_name,
+          email: formData.customer_email,
+          phone: formData.customer_phone,
+        });
+      }
+
       const booking = await api.post('/bookings', {
         shop_id: shop.id,
         service_id: selectedService.id,

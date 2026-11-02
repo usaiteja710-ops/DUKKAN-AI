@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { isValidPhone, normalizePhone } from '../utils/phone.js';
 
 export const availabilityQuerySchema = z.object({
-  serviceId: z.string().uuid('Invalid serviceId UUID'),
+  serviceId: z.string().uuid('Invalid serviceId'),
   date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'date must be in YYYY-MM-DD format')
@@ -10,13 +10,13 @@ export const availabilityQuerySchema = z.object({
       const d = new Date(val);
       return !isNaN(d.getTime());
     }, 'Invalid calendar date'),
-  staffId: z.string().uuid().optional(),
+  staffId: z.string().uuid('Invalid staff ID').optional().nullable().or(z.literal('')),
 });
 
 export const createBookingSchema = z.object({
-  shop_id: z.string().uuid('Invalid shop_id UUID'),
-  service_id: z.string().uuid('Invalid service_id UUID'),
-  staff_id: z.string().uuid().optional(),
+  shop_id: z.string().uuid('Invalid shop ID'),
+  service_id: z.string().uuid('Invalid service ID'),
+  staff_id: z.string().uuid('Invalid staff ID').optional().nullable().or(z.literal('')),
   start_time: z
     .string()
     .datetime({ message: 'start_time must be a valid ISO 8601 UTC string' })
@@ -48,20 +48,23 @@ export const cancelSchema = z.object({
 
 export const ownerBookingStatusSchema = z.object({
   status: z.enum(['confirmed', 'completed', 'cancelled', 'no_show']),
-  note: z.string().trim().max(500).optional(),
+  note: z.string().trim().max(500).optional().default(''),
 }).strict();
 
 export const walkInBookingSchema = z.object({
-  service_id: z.string().uuid('Invalid service_id UUID'),
-  staff_id: z.string().uuid().optional(),
-  start_time: z.string().datetime(),
+  service_id: z.string().min(1, 'service_id is required'),
+  staff_id: z.string().optional().nullable().or(z.literal('')),
+  start_time: z
+    .string()
+    .datetime({ message: 'start_time must be a valid ISO 8601 UTC string' }),
   customer_name: z.string().trim().min(2).max(80),
   customer_phone: z
     .string()
     .trim()
     .refine(isValidPhone, { message: 'Invalid phone number format' })
-    .transform(normalizePhone),
-  customer_email: z.string().trim().email('Invalid email address'),
-  notes: z.string().trim().max(500).optional().default(''),
+    .transform(normalizePhone)
+    .optional()
+    .or(z.literal('')),
+  customer_email: z.string().trim().email().optional().or(z.literal('')),
+  notes: z.string().trim().max(500).optional().default('Walk-in customer'),
 }).strict();
-
